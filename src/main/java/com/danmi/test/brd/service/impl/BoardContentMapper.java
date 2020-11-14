@@ -4,6 +4,7 @@ package com.danmi.test.brd.service.impl;
 import java.util.List;
 import java.util.Map;
 
+import com.danmi.test.brd.service.BoardContentFileVO;
 import com.danmi.test.brd.service.BoardContentVO;
 
 import egovframework.rte.psl.dataaccess.mapper.Mapper;
@@ -28,4 +29,6 @@ public interface BoardContentMapper {
 	void updateBoardContentUseYn(int contentId) throws Exception;
 	
 	void insertFile(Map<String, Object> map) throws Exception;
+	
+	BoardContentFileVO selectFile(int contentId) throws Exception;
 }

@@ -306,6 +306,25 @@ public class BoardContentController {
 		return "redirect:/allBoardContentList.do";
 	}
 	
-	
+
+	@RequestMapping(value = "/fileDown.do" , method=RequestMethod.GET)
+	public String fileDown(int contentId,HttpServletResponse response) throws Exception {
+		
+		logger.debug("----------- BoardContentController : fileDown.do start");
+		
+		BoardContentFileVO FileVO=boardContentService.selectFile(contentId);
+		System.out.println(FileVO.getOrgFileName()+"파일 이름");
+		String originalFileName=FileVO.getOrgFileName();
+		String storedFileName= FileVO.getStoredFileName();
+		byte fileByte[]=org.apache.commons.io.FileUtils.readFileToByteArray(new File("C:\\upload\\temp\\"+storedFileName));
+		response.setContentType("application/octet-stream");
+		response.setContentLength(fileByte.length);
+		response.setHeader("Content-Disposition",  "attachment; fileName=\""+URLEncoder.encode(originalFileName, "UTF-8")+"\";");
+		response.getOutputStream().write(fileByte);
+		response.getOutputStream().flush();
+		response.getOutputStream().close();
+		
+		return "/boardContentInfo.do?contentId="+contentId;
+	}
 	
 }

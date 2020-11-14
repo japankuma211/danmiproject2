@@ -40,6 +40,13 @@
 	 obj.submit();
 	 
  }
+ 
+ function file_Down(obj) {
+	 console.log("===fileDown function start");
+	 $("#contentId").attr("value",obj);
+	$("#fileDown").attr("action","/fileDown.do");
+	$("#fileDown").submit();
+ }
 
 
  
@@ -97,9 +104,7 @@
 		    <th>첨부파일</th>
 		    <td class="content">
 		     ${FileVO.orgFileName}(${FileVO.fileSize }kb)
-
-		      <input type="button" value="다운로드" onclick="#" >
-		     <%--  <input type="button" value="다운로드" onclick="location.href='/fileDown.do?contentId?${FileVO.contentId}'" > --%>
+		    <input type="button" value="다운로드" onclick="file_Down('${FileVO.contentId}'); return false;" > 
 		    </td>
 		    </c:if>    
 		</tr>

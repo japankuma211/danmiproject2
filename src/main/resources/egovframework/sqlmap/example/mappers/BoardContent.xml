@@ -191,4 +191,13 @@
 		set useYn = 'D'
 		where fileId=#{fileId}
 	</delete>
+	
+	<!-- 첨부파일 다운 -->
+<select id="selectFileInfo" parameterType="hashMap" resultType="hashMap">
+	SELECT 
+		storedFileName,
+		orgFileName
+	FROM t_brd_file
+	WHERE fileId = #{fileId}
+</select>
 </mapper>

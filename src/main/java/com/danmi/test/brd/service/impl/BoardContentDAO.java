@@ -123,4 +123,8 @@ public class BoardContentDAO extends EgovAbstractMapper {
 		
 		return selectOne("boardContentMapper.selectFile",contentId);
 	}
+	
+	
+
+	
 }

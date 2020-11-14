@@ -29,4 +29,5 @@ public interface BoardContentService {
 	public void updateBoardContentUseYn(int contentId) throws Exception;
 
 	public BoardContentFileVO selectFile(int contentId) throws Exception;
+	
 }

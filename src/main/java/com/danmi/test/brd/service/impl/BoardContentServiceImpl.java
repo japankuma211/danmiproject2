@@ -138,6 +138,10 @@ public class BoardContentServiceImpl extends EgovAbstractServiceImpl implements 
 		
 	    return boardContentDAO.selectFile(contentId);
 	}
+
+	
+	
+	
 	
 	
 	
