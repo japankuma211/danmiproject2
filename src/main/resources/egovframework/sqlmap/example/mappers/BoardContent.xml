@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="boardContentMapper">
+
+	 <resultMap  id="boardVO" type="boardVO">
+		<result property="boardCd" column="boardCd"/>
+		<result property="boardNm" column="boardNm"/>
+	 </resultMap>
+	 
+	 <resultMap id="boardContentVO" type="boardContentVO" >	 
+		<result property="contentId" column="contentId"/> 
+		<result property="boardCd" column="boardCd"/>
+		<result property="title" column="title" />
+		<result property="content" column="content"/>
+		<result property="tag" column="tag"/>  
+		<result property="readCnt" column="readCnt"/>
+		<result property="password" column="password"/>
+		<result property="id" column="id"/>
+		<result property="phone" column="phone"/>
+		<result property="dtStart" column="dtStart"/>
+		<result property="dtEnd" column="dtEnd"/> 
+		<result property="status" column="status"/>
+		<result property="ip" column="ip"/>
+		<result property="uptDt" column="uptDt"/>
+		<result property="regDt" column="regDt"/>
+		<collection property="boardNm" column="boardNm" resultMap="boardVO"/>
+		<collection property="boardCd"  column="boardCd" resultMap="boardVO"/>	
+	 </resultMap> 
+	
+	 <resultMap id="boardContentFileVO" type="boardContentFileVO" >
+		<result property="fileId" column="fileId"/>
+		<result property="contentId" column="contentId"/>
+		<result property="orgFileName" column="orgFileName"/>
+		<result property="storedFileName" column="storedFileName"/>
+		<result property="regDt" column="regDt"/>
+		<result property="useYn" column="useYn"/>
+		<result property="fileSize" column="fileSize"/>
+	 </resultMap>
+	
+	<select id="selcetBoardCount"  resultType="int">	 
+		  select count(*)
+		  from t_brd_cont		 
+		  where status ='N'
+		  <if test="boardCd !=0  and boardCd !=null">
+		   and boardCd=#{boardCd}
+		  </if>		 
+	</select>
+	<select id="adminTotalCount"  resultType="int">	 
+		  select count(*)
+		  from t_brd_cont		 
+		  
+		  	 
+	</select>
+	
+	<select id="selectBoardContentList"  resultType="boardContentVO" >		
+		select *
+		from(	
+			select ROW_NUMBER() OVER (ORDER BY t_brd_cont.contentId desc) NUM,
+			       t_brd_cont.contentId as contentId,
+			       t_brd_cont.boardCd as boardCd,
+			       t_brd_cont.title as title,
+			       t_brd_cont.content as content,
+			       t_brd_cont.tag as tag,
+			       t_brd_cont.readCnt as readCnt,
+			       t_brd_cont.password as password,
+			       t_brd_cont.id as id,
+			       t_brd_cont.phone as phone,
+			       t_brd_cont.dtStart as dtStart,
+			       t_brd_cont.dtEnd as dtEnd,
+			       t_brd_cont.status as status,
+			       t_brd_cont.ip as ip,
+			       t_brd_cont.uptDt as uptDt,
+			       t_brd_cont.regDt as regDt,
+			       t_brd.boardNm as boardNm		      		     
+			from t_brd , t_brd_cont 
+			where t_brd.boardCd= t_brd_cont.boardCd
+			and t_brd_cont.status ='N' 
+			 <if test="boardCd != 0 and boardCd !='' and boardCd !=null ">
+		     and t_brd_cont.boardCd =#{boardCd} 
+			</if> 
+			 order by contentId desc
+			 )
+		  where NUM between #{startRow} and #{endRow}
+	</select>
+		
+		
+	<select id="selectBoardContentInfo" resultType="boardContentVO" parameterType="int">
+		   select t_brd_cont.contentId as contentId,
+			       t_brd_cont.boardCd as boardCd,
+			       t_brd_cont.title as title,
+			       t_brd_cont.content as content,
+			       t_brd_cont.tag as tag,
+			       t_brd_cont.readCnt as readCnt,
+			       t_brd_cont.password as password,
+			       t_brd_cont.id as id,
+			       t_brd_cont.phone as phone,
+			       t_brd_cont.dtStart as dtStart,
+			       t_brd_cont.dtEnd as dtEnd,
+			       t_brd_cont.status as status,
+			       t_brd_cont.ip as ip,
+			       t_brd_cont.uptDt as uptDt,
+			       t_brd_cont.regDt as regDt,
+			       t_brd.boardNm as boardNm		      		     
+			from t_brd , t_brd_cont 
+			where t_brd.boardCd= t_brd_cont.boardCd
+			and contentId = #{contentId}
+	</select>
+	
+	<update id="updateBoardContent" parameterType="boardContentVO">	   
+		   update t_brd_cont
+		   set title = #{title},
+		       content = #{content},
+		       uptDt = sysdate
+		   where contentId = #{contentId} 
+		
+	</update>
+	
+	<update id="updateReadCount" parameterType="int">
+		   update t_brd_cont
+		   set readCnt = readCnt+1
+		   where contentId=#{contentId}
+	</update>
+	
+	<insert id="insertBoardContent" parameterType="boardContentVO">
+	      <selectKey keyProperty="contentId" resultType="int" order="BEFORE">
+			select seq_contentId.nextval from dual
+		  </selectKey>
+		    insert into t_brd_cont(contentId,id,password,ip,boardCd,phone,title,content,regDt)
+		    values( #{contentId},#{id},#{password},#{ip},#{boardCd},#{phone},#{title},#{content},sysdate)
+	</insert>
+	
+	<update id="deleteBoardContent" parameterType="int">
+		   update t_brd_cont
+		   set status = 'D'
+		   where contentId = #{contentId}
+	</update>
+	
+	<update id="updateBoardContentUseYn" parameterType="int">
+	     update t_brd_cont
+	     set status = 'N'
+	     where contentId =#{contentId}
+	</update>
+	
+	<select id="allBoardContentList"  resultType="boardContentVO" >		
+		select *
+		from(	
+			select ROW_NUMBER() OVER (ORDER BY t_brd_cont.contentId desc) NUM,
+			       t_brd_cont.contentId as contentId,
+			       t_brd_cont.boardCd as boardCd,
+			       t_brd_cont.title as title,
+			       t_brd_cont.content as content,
+			       t_brd_cont.tag as tag,
+			       t_brd_cont.readCnt as readCnt,
+			       t_brd_cont.password as password,
+			       t_brd_cont.id as id,
+			       t_brd_cont.phone as phone,
+			       t_brd_cont.dtStart as dtStart,
+			       t_brd_cont.dtEnd as dtEnd,
+			       t_brd_cont.status as status,
+			       t_brd_cont.ip as ip,
+			       t_brd_cont.uptDt as uptDt,
+			       t_brd_cont.regDt as regDt,			    
+			       t_brd.boardNm as boardNm		      		     
+			from t_brd , t_brd_cont 
+			where t_brd.boardCd= t_brd_cont.boardCd	
+		    
+			 order by contentId desc
+			 )
+		  where NUM between #{startRow} and #{endRow}
+	</select>
+	
+	<!-- 첨부파일 -->
+	<insert id="insertFile" ><!-- 파일업로드 -->
+		  <selectKey keyProperty="fileId" resultType="int" order="BEFORE">
+			select seq_fileId.nextval from dual
+		  </selectKey>
+	        insert into t_brd_file(fileId,contentId,orgFileName,storedFileName,fileSize)
+	        values(#{fileId},#{contentId},#{orgFileName},#{storedFileName},#{fileSize})
+	</insert>
+	
+	<select id="selectFile" parameterType="int" resultType="boardContentFileVO"><!--첨부파일 상세 -->
+	   select orgFileName,fileId,ROUND(fileSize/1024,1) as fileSize,contentId,storedFileName
+	   from t_brd_file
+	   where contentId=#{contentId}
+	   and useYn= 'Y'
+	</select>
+	
+	<delete id="deleteFile" parameterType="int"><!-- 첨부파일 삭제-->
+		update t_brd_file
+		set useYn = 'D'
+		where fileId=#{fileId}
+	</delete>
+</mapper>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <typeAliases>		
+		<typeAlias alias="boardContentVO" type="com.danmi.test.brd.service.BoardContentVO"/>
+		<typeAlias alias="boardVO" type="com.danmi.test.brd.service.BoardVO"/>
+		<typeAlias alias="userVO" type="com.danmi.test.user.service.UserVO"/>
+		<typeAlias alias="loginVO" type="com.danmi.test.login.service.LoginVO"/>
+		<typeAlias alias="permissionVO" type="com.danmi.test.permission.service.PermissionVO"/>
+        <typeAlias alias="boardContentFileVO" type="com.danmi.test.brd.service.BoardContentFileVO"/>
+    </typeAliases>
+</configuration>

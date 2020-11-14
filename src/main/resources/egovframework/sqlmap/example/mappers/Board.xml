@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="boardMapper">
+
+
+	<resultMap id="boardVO" type="boardVO" >
+		<result property="boardCd" column="boardCd"/> 
+		<result property="boardNm" column="boardNm"/>
+		<result property="boardTp" column="boardTp" />
+		<result property="orderby" column="orderby"/>
+		<result property="recomYn" column="recomYn"/>  
+		<result property="scrapYn" column="scrapYn"/>
+		<result property="replyYn" column="replyYn"/>
+		<result property="categoryYn" column="categoryYn"/>
+		<result property="permRead" column="permRead"/>
+		<result property="permInst" column="permInst"/>
+		<result property="useYn" column="useYn"/> 
+		<result property="regDt" column="regDt"/>
+	</resultMap> 
+	
+	
+	<select id="selectTBrd" parameterType="int" resultType="boardVO" >		
+		   select * 
+		   from t_brd
+		   where boardCd = #{boardCd} 
+			
+	</select>
+	
+	<select id="selectList" resultType="boardVO">	
+		   select *
+		   from t_brd
+		   <if test="permission == 0">
+		   where useYn = 'Y'
+		   </if>
+		   order by boardCd
+		   
+	</select>
+	
+	<update id="deleteBoard" parameterType="int">	  
+		   update t_brd
+		   set useYn = 'N'
+		   where boardCd = #{boardCd}
+		  
+	</update>
+	
+	<insert id="insertBoard" parameterType="boardVO">	   
+		   insert into t_brd(boardCd,boardNm,boardTp,regDt)
+		   values(#{boardCd},#{boardNm},#{boardTp},sysdate)
+		   
+	</insert>
+	
+	<update id="updateBoard" parameterType="boardVO">
+	       update t_brd
+	       set boardNm = #{boardNm} , boardTp = #{boardTp} , 
+	           recomYn = #{recomYn} , scrapYn = #{scrapYn} , 
+	           replyYn = #{replyYn} , categoryYn = #{categoryYn},
+	           permRead= #{permRead} , permInst = #{permInst},
+	           useYn = #{useYn}
+	       where boardCd = #{boardCd}
+	</update>
+</mapper>

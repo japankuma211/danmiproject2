@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="loginMapper">
+	
+	<insert id="loginRecord" parameterType="userVO">
+		<selectKey keyProperty="useq" resultType="int" order="BEFORE">
+			select seq_useq.nextval from dual
+		</selectKey>
+		
+		insert into t_login_hist(useq, permission, id, userNm, hphone, regDt)
+		values(#{useq}, #{permission}, #{id}, #{userNm}, #{hphone}, sysdate)
+	</insert>
+	
+	
+	
+	<resultMap type="loginVO" id="loginResult">
+		<result property="permission" column="permission"/>
+		<result property="id" column="id"/>
+		<result property="userNm" column="userNm"/>
+		<result property="hphone" column="hphone"/>
+		<result property="regDt" column="regDt"/>
+	</resultMap>	
+	
+	<select id="loginList" parameterType="String" resultMap="loginResult">
+		select * from t_login_hist  
+		where id = #{id}
+		order by regDt desc  
+	</select> 
+    
+    <select id="allLoginRecord" resultType="loginVO">
+       
+       select * 
+       from t_login_hist
+       <if test="keywordType == 'id'">
+          where id like '%' ||#{keyword}|| '%' 
+       </if>
+       <if test="keywordType == 'userNm'">
+		  where userNm like '%' ||#{keyword}|| '%' 
+	   </if>
+       order by id , regDt desc
+    </select>
+    
+</mapper>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="permissionMapper">
+
+   <resultMap type="permissionVO" id="permissionVO">   
+       <result property="permissionId" column="permissionId"/> 
+       <result property="permission" column="permission"/>
+       <result property="permissionNm" column="permissionNm"/>
+       <result property="useYn" column="useYn"/>
+       <result property="regDt" column="regDt"/>
+   </resultMap>
+   
+   <select id="permissionList" resultType="permissionVO">
+       select * 
+       from t_user_permission
+       where useYn = 'Y'
+       order by PERMISSIONID ASC
+   </select>
+   
+   <select id="permissionInfo" resultType="permissionVO" parameterType="int">
+        select *
+        from t_user_permission
+        where permissionId=#{permissionId}
+   </select>
+   
+   <update id="updatePermission" parameterType="permissionVO">
+        update t_user_permission
+        set permissionNm=#{permissionNm},
+            permission=#{permission}
+        where permissionId=#{permissionId}
+   </update>
+   
+   <update id="deletePermission" parameterType="int">
+       update t_user_permission
+       set useYn='N'
+       where permissionId=#{permissionId}
+   </update>
+   
+   <insert id="insertPermission" parameterType="permissionVO">
+       <selectKey keyProperty="permissionId" resultType="int" order="BEFORE">
+		 select seq_permissionId.nextval from dual
+		</selectKey>
+        insert into t_user_permission(permissionId,permission,permissionNm,regDt,useYn)
+        values(#{permissionId},#{permission},#{permissionNm},sysdate,'Y')
+   </insert>
+</mapper>
